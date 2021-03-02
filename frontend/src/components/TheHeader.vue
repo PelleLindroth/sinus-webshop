@@ -111,6 +111,7 @@ methods:{
     signIn(){
         this.$store.dispatch('logIn', this.user)
         this.user = {email: '', password: ''}
+        this.toggleModal()
     },
     signOut(){
         this.$store.dispatch('logOut')
