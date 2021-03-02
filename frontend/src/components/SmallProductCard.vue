@@ -22,16 +22,16 @@
     @click="deleteItemFromCart(prod._id)">
     <p class="large">{{prod.price}} kr</p>
   </div>
-  <BaseModal v-if="toggleModal" @click.native="closeModal">
+  <BaseModal v-if="toggleModal" >
   <section class="modal-inner">
       <section class="delete-info" v-if="deleteOrEdit === 'delete'">
         <p class="bold">Are you sure you want to delete item from the store?</p>
         <p>This action <strong>cannot</strong> be undone</p>
-        <BaseButton color="pink" class="btn">CONFIRM</BaseButton>
+        <BaseButton color="pink" class="btn" @click.native="deleteProduct" >CONFIRM</BaseButton>
         <BaseButton color="offwhite" class="btn" @click.native="closeModal">CANCEL</BaseButton>
       </section>
       <section class="edit-info" v-if="deleteOrEdit === 'edit'">
-        <form class="information-wrapper">
+        <form @submit.prevent="updateProduct" class="information-wrapper">
       <p class="bold">Edit item</p>
 
       <div class="view-row">
@@ -59,8 +59,8 @@
         <input type="text" v-model="product.imgFile" />
       </div>
       <div class="edit-buttons">
-       <BaseButton color="offwhite" class="btn" @click.native="closeModal">CANCEL</BaseButton>
-      <BaseButton color="teal" class="btn">Edit Product</BaseButton>
+       <BaseButton color="offwhite" class="btn" type="button" @click.native="closeModal">CANCEL</BaseButton>
+      <BaseButton color="teal" class="btn" >Edit Product</BaseButton>
     </div>
   </form>
       </section>
@@ -121,7 +121,15 @@ props: {
     },
     closeModal() {
       this.toggleModal = false
-    }
+    },
+    updateProduct() {
+      this.$store.dispatch("updateProduct", this.product)
+      this.toggleModal = false
+    },
+    deleteProduct() {
+      this.$store.dispatch("deleteProduct", this.product._id)
+      this.toggleModal = false
+   }
   }
 }
 

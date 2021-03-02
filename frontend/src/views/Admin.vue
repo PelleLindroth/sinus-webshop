@@ -12,32 +12,32 @@ class="no-access"
   <h2>ADMIN</h2>
   
   <div class="flex-wrapper">
-  <form class="information-wrapper">
+  <form @submit.prevent="addNewProduct" class="information-wrapper">
       <p class="bold">Add new item</p>
 
       <div class="view-row">
         <label>Title</label>
-        <input type="text"  />
+        <input type="text"  v-model="product.title" />
       </div>
 
       <div class="view-row">
         <label>Price:</label>
-        <input type="text" />
+        <input type="text" v-model="product.price" />
       </div>
 
       <div class="view-row">
         <label>Short Desc:</label>
-        <input type="text"  />
+        <input type="text" v-model="product.shortDesc" />
       </div>
 
       <div class="view-row">
         <label>Long desc:</label>
-        <input type="text"  />
+        <input type="text" v-model="product.longDesc" />
       </div>
 
       <div class="view-row">
         <label>Image file:</label>
-        <input type="text"  />
+        <input type="text" v-model="product.imgFile"  />
       </div>
 
       <BaseButton color="teal" class="btn">Add Product</BaseButton>
@@ -63,6 +63,17 @@ export default {
 components: {
   SmallProductCard
 },
+data() {
+  return {
+    product: {
+        title: "",
+        price: "",
+        shortDesc: "",
+        longDesc: "",
+        imgFile: ""
+      }
+  }
+},
 computed: {
   products() {
     return this.$store.getters.getProducts
@@ -70,6 +81,20 @@ computed: {
   userRole() {
     console.log(this.$store.getters.getCurrentUser);
     return this.$store.getters.getCurrentUser
+  }
+},
+methods: {
+  async addNewProduct() {
+    const success = await this.$store.dispatch("createProduct", this.product)
+    if (success) {
+      this.product = {
+        title: "",
+        price: "",
+        shortDesc: "",
+        longDesc: "",
+        imgFile: ""
+      }
+    }
   }
 }
 }
