@@ -1,5 +1,6 @@
 <template>
 <section class="single-product-wrapper">
+  <Breadcrumbs :path1="product.title" />
   <div v-if="productsLoading" class="loading">
     <h4>Loading...</h4>
     <div class="loader"></div>

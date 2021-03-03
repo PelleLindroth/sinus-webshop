@@ -1,10 +1,14 @@
 <template>
-  <section>
+<section class="outer-wrapper">
+  <Breadcrumbs path1="profile" class="profile-breadcrumbs"/>
+  <section class="profile-wrapper">
+    
     <h2>MY INFORMATION</h2>
     <div v-if="!user || !userDetails" class="loading">
       <h2>Loading data...</h2>
     </div>
     <div v-else class="information-wrapper">
+      
       <p class="bold">My information</p>
 
       <div class="view-row">
@@ -131,6 +135,7 @@
       </div>
     </div>
     <OrderHistory v-if="user && user.role == 'customer'" />
+  </section>
   </section>
 </template>
 
@@ -264,7 +269,13 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/_variables.scss';
 
-section {
+.outer-wrapper {
+  max-width: 100rem;
+  margin: 0 auto;
+}
+
+
+.profile-wrapper {
   align-items: center;
   display: flex;
   flex-direction: column;
