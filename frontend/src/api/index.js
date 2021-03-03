@@ -1,5 +1,4 @@
 import axios from 'axios'
-
 const API = axios.create({
   baseURL: 'http://localhost:5000/api'
 })
@@ -10,7 +9,6 @@ export async function fetchProducts() {
   const products = await API.get('/products/')
   return products.data
 }
-
 
 export async function submitOrder(payload, userToken) {
   try {
@@ -33,7 +31,7 @@ export async function getOrders(userToken) {
         Authorization: `Bearer ${userToken}`
       }
     })
-    console.log(response)
+
     return response.data
   } catch (e) {
     return false
@@ -97,5 +95,64 @@ export function clearStorage() {
 
 function setStorage(payload) {
   sessionStorage.setItem('user', JSON.stringify(payload))
+}
+
+// Admin
+
+export async function createProduct(payload, adminToken) {
+  try {
+    const response = await API.post('/products', payload, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`
+      }
+    })
+
+    return response.data
+
+  } catch (e) {
+    return false
+  }
+}
+
+export async function updateOrderStatus(payload, adminToken) {
+  try {
+    const response = await API.patch(`/orders/${payload._id}`, payload, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`
+      }
+    })
+
+    return response
+  } catch (error) {
+    return false
+  }
+}
+
+export async function deleteProduct(id, adminToken) {
+  try {
+    const response = await API.delete(`/products/${id}`, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`
+      }
+    })
+
+    return response.data.message // "Product obliteraded"
+  } catch (error) {
+    return false
+  }
+}
+
+export async function updateProduct(payload, adminToken) {
+  try {
+    const response = await API.patch(`/products/${payload._id}`, payload, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`
+      }
+    })
+
+    return response.data
+  } catch (e) {
+    return false
+  }
 }
 

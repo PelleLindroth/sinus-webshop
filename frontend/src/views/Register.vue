@@ -81,7 +81,6 @@ export default {
     },
     validateUserDetails() {
       if (this.userDetails.name.length < 5) {
-        console.log('yes')
         this.error.name = true
         return false
       }

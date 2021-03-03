@@ -20,7 +20,8 @@
             <div v-else @click="toggleModal" class="initials">{{userInitials}}</div>
         </div>
     </div>
-
+        
+        <transition name="fade">
         <div v-if="loginModalActive" class="signInBox">
             <div v-if="!isLoggedIn" class="sign-in-form">
                 <h2>SIGN IN</h2>
@@ -48,12 +49,18 @@
                 <router-link to="/profile">
                     <Base-button @click.native="toggleModal" class="base-button" color="teal">My profile</Base-button>
                 </router-link>
+
+                <router-link to="/admin">
+                    <Base-button v-if="userRole" @click.native="toggleModal" class="base-button" color="offwhite">Admin view</Base-button>
+                </router-link>
+
                 <router-link to="/">
                     <Base-button @click.native="signOut" class="base-button" color="offwhite">Sign out</Base-button>
                 </router-link>
             </div>
 
         </div>
+        </transition>
 
 
   </header>
@@ -90,15 +97,26 @@ computed:{
         const name = this.$store.getters.getCurrentUser.name
         let [first, last] = name.split(' ')
         return `${first[0]}${last[0]}`
+    },
+    userRole(){
+        if (this.$store.getters.getCurrentUserRole === 'admin') {
+            return true
+        }else{
+            return false
+        }
     }
 },
 methods:{
     toggleModal(){
         this.modalActive = !this.modalActive
     },
-    signIn(){
-        this.$store.dispatch('logIn', this.user)
+    async signIn(){
+        await this.$store.dispatch('logIn', this.user)
         this.user = {email: '', password: ''}
+        if (this.isLoggedIn) {
+            this.toggleModal()
+            }
+            
     },
     signOut(){
         this.$store.dispatch('logOut')
@@ -113,6 +131,7 @@ methods:{
 
     header{
         background-color: black;
+        position: relative;
         padding: 3rem 4rem;
         display: flex;
         justify-content: space-between;
@@ -141,6 +160,7 @@ methods:{
                 .profile{
                     height: 5rem;
                     margin-left: 3rem;
+                    
                 }
                 .initials {
                     align-items: center;
@@ -156,6 +176,7 @@ methods:{
                     padding: 1rem;
                     border-radius: 50%;
                     background-color: $tertiary-clr;
+                    
                 }
                 .cart-img{
                     position: relative;
@@ -189,6 +210,21 @@ methods:{
         flex-direction: column;
         align-content: center;
         box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.596);
+
+        @media (min-width: 1440px) {
+            
+        }
+
+        .already-logged-in {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .base-button {
+                width: 30rem;
+                margin-bottom: 2rem;
+            }
+        }
         a{
             text-decoration: none;
             color: black;
@@ -199,12 +235,20 @@ methods:{
         }
         label{
         display: inline-block;
-        width: 100px;
+        width: 10rem;
+        font-size: 1.4rem;
         }
         input{
-        height: 2.4rem;
-        width: 250px;
+        width: 25rem;
         margin-bottom: 1.4rem;
+        background-color: $off-white;
+        border: 1px solid $secondary-clr-dk;
+        font-family: inherit;
+        font-size: 1.4rem;
+        height: 3rem;
+        outline: none;
+        padding: 0.5rem;
+
         }
         .email{
         width: fit-content;
@@ -224,6 +268,9 @@ methods:{
                 text-decoration: underline;
                 font-weight: bold;
             }
+            .register-text{
+                margin-top: 0.5rem;
+            }
         }
         .error-message{
             color: red;
@@ -231,4 +278,19 @@ methods:{
         }  
     }
 }
+
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+
+  }
+
+  .fade-enter-to, .fade-leave {
+    opacity: 1;
+    
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: all 0.3s ease-out;
+    
+  }
 </style>

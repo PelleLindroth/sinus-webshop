@@ -6,50 +6,77 @@ export default {
     cart: {
       items: []
     },
-    cartObject: {},
-    
+    productsObject: {},
     products: [],
     searchPhrase: '',
-    productsLoading: true
+    productsLoading: true,
+    // filterIsActive : true,
+    // filterBy: 'clothes'
   },
   mutations: {
     [Mutations.SET_PRODUCTS](state, payload) {
       state.products = payload
       state.productsLoading = false
-    },
-    [Mutations.SET_CART_OBJECT](state) {
       for (let product of state.products) {
         const id = product._id;
-        state.cartObject[id] = product
+        state.productsObject[id] = product
       }
     },
     [Mutations.ADD_TO_CART](state, id) {
-      state.cart.items.push(id)
-      state.cartObject[id].amount++
+      let exists = false
+      state.cart.items.forEach(item => {
+        if (item._id == id) {
+          item.amount++
+          exists = true
+        }
+      })
+      if (!exists) {
+        state.cart.items.push({ _id: id, amount: 1 })
+      }
+    },
+    [Mutations.ADD_PRODUCT](state, payload) {
+      state.products.push(payload)
+      state.productsObject[payload._id] = payload
+    },
+    [Mutations.DELETE_PRODUCT](state, id) {
+      let index = 0
+      for (let i = 0; i < state.products.length; i++) {
+        if (state.products[i]._id == id) {
+          index = i
+        }
+      }
+      state.products.splice(index, 1)
+      delete state.productsObject[id]
+    },
+    [Mutations.UPDATE_PRODUCT](state, payload) {
+      const updatedObject = state.productsObject[payload._id]
+      Object.keys(updatedObject).forEach(key => {
+        updatedObject[key] = payload[key]
+      })
     },
     [Mutations.REMOVE_FROM_CART](state, id) {
-      let index = state.cart.items.indexOf(id)
-      state.cart.items.splice(index, 1)
-      state.cartObject[id].amount--
+      state.cart.items.forEach(item => {
+        if (item._id == id) {
+          item.amount--
+        }
+      })
     },
     [Mutations.DELETE_FROM_CART](state, id) {
-      state.cart.items = state.cart.items.filter(item => item != id)
+      let index = 0;
+      for (let i = 0; i < state.cart.items.length; i++) {
+        if (state.cart.items[i]._id == id) {
+          index = i
+        }
+      }
 
-      state.cartObject[id].amount = 0;
+      state.cart.items.splice(index, 1)
     },
     [Mutations.SET_SEARCH_PHRASE](state, payload) {
       state.searchPhrase = payload
     },
     [Mutations.RESET_CART](state) {
       state.cart.items = []
-      
     },
-    [Mutations.RESET_CART_OBJECT](state) {
-      for (let product of Object.values(state.cartObject)) {
-        product.amount = 0
-      }
-      
-    }
   },
   actions: {
     async fetchProducts({ commit }) {
@@ -57,49 +84,107 @@ export default {
 
       commit(Mutations.SET_PRODUCTS, products)
     },
-    setCartObject({ commit }) {
-      commit(Mutations.SET_CART_OBJECT)
-    },
     addToCart({ commit }, id) {
       commit(Mutations.ADD_TO_CART, id)
     },
-    removeFromCart({ commit }, id) {
-      commit(Mutations.REMOVE_FROM_CART, id)
+    async createProduct({ commit, getters }, payload) {
+      const response = await API.createProduct(payload, getters.getUserToken)
+
+      if (response) {
+        commit(Mutations.ADD_PRODUCT, response.product)
+        return true
+      } else {
+        return false
+      }
+    },
+    async deleteProduct({ commit, getters }, id) {
+      const response = await API.deleteProduct(id, getters.getUserToken)
+      if (response) {
+        commit(Mutations.DELETE_PRODUCT, id)
+        return true
+      } else {
+        return false
+      }
+    },
+    async updateOrderStatus({ commit, getters }, payload) {
+      const response = await API.updateOrderStatus(payload, getters.getUserToken)
+
+      if (response) {
+        commit(Mutations.UPDATE_ORDER, payload)
+      }
+    },
+    async updateProduct({ commit, getters }, payload) {
+      const response = await API.updateProduct(payload, getters.getUserToken)
+
+      if (response) {
+        commit(Mutations.UPDATE_PRODUCT, response.data)
+        return true
+      } else {
+        return false
+      }
+    },
+    removeFromCart({ commit, state }, id) {
+      state.cart.items.forEach(item => {
+        if (item._id == id) {
+          if (item.amount > 1) {
+            commit(Mutations.REMOVE_FROM_CART, id)
+          } else {
+            commit(Mutations.DELETE_FROM_CART, id)
+          }
+        }
+      })
     },
     deleteFromCart({ commit }, id) {
       commit(Mutations.DELETE_FROM_CART, id)
     },
+
     async submitOrder({ commit, state, rootState }) {
-      const response = await API.submitOrder(state.cart, rootState.userModule.userToken)
+      const cart = []
+
+      state.cart.items.forEach(item => {
+        for (let i = 0; i < item.amount; i++) {
+          cart.push(item._id)
+        }
+      })
+      const response = await API.submitOrder({ items: cart }, rootState.userModule.userToken)
 
       if (response) {
         commit(Mutations.RESET_CART)
-        commit(Mutations.RESET_CART_OBJECT)
+        //---------------------
+        //---------------------
+        const userToken = JSON.parse(sessionStorage.getItem('user'))
+        const orders = await API.getOrders(userToken)
+        
+        if (orders) {
+          commit(Mutations.SET_ORDER_HISTORY, orders)
+        }
+        //---------------------
+        //---------------------
       }
     },
     async setSearchPhrase({ commit }, payload) {
       commit(Mutations.SET_SEARCH_PHRASE, payload)
     },
-    cleanSearchPhrase({commit}){
+    cleanSearchPhrase({ commit }) {
       commit(Mutations.SET_SEARCH_PHRASE, '')
     }
   },
   getters: {
     getProducts(state) {
-      if (state.searchPhrase.length == 0) {
+      if (state.searchPhrase.length == 0 ) {
         return state.products
-      }else{
+      } else {
         //--
         let filteredProducts = []
         state.products.map(prod => {
-          for (let key in prod){
-            if(typeof prod[key] != 'number'){
+          for (let key in prod) {
+            if (typeof prod[key] != 'number') {
               if (prod[key].toLowerCase().includes(state.searchPhrase)) { //hittar en match
                 if (filteredProducts.length == 0) {
                   filteredProducts.push(prod)
-                }  
-                let rep = true               
-                filteredProducts.map( filProd => {
+                }
+                let rep = true
+                filteredProducts.map(filProd => {
                   if (filProd._id != prod._id) {
                     rep = false
                   }
@@ -107,9 +192,9 @@ export default {
                     rep = true
                   }
                 })
-                  if (rep == false) {
-                    filteredProducts.push(prod)
-                  }
+                if (rep == false) {
+                  filteredProducts.push(prod)
+                }
               }
             }
           }
@@ -117,14 +202,12 @@ export default {
         //--
         return filteredProducts
       }
-        
     },
     getSingleProduct: state => id =>
       state.products.find(product => product._id == id)
     ,
     getCart(state) {
-
-      return state.cartObject
+      return state.cart.items.map(item => ({ ...state.productsObject[item._id], amount: item.amount }))
     },
     getSearchPhrase(state) {
       return state.searchPhrase
@@ -132,8 +215,12 @@ export default {
     getProductsLoading(state) {
       return state.productsLoading
     },
-    getCartLength(state){
-      return state.cart.items.length
+    getCartLength(state) {
+      let length = 0
+      state.cart.items.forEach(item => {
+        length += item.amount
+      })
+      return length
     }
   },
 }
