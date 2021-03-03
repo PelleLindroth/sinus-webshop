@@ -9,7 +9,9 @@ export default {
     productsObject: {},
     products: [],
     searchPhrase: '',
-    productsLoading: true
+    productsLoading: true,
+    // filterIsActive : true,
+    // filterBy: 'clothes'
   },
   mutations: {
     [Mutations.SET_PRODUCTS](state, payload) {
@@ -136,6 +138,7 @@ export default {
     deleteFromCart({ commit }, id) {
       commit(Mutations.DELETE_FROM_CART, id)
     },
+
     async submitOrder({ commit, state, rootState }) {
       const cart = []
 
@@ -145,11 +148,20 @@ export default {
           cart.push(item._id)
         }
       })
-
       const response = await API.submitOrder({ items: cart }, rootState.userModule.userToken)
 
       if (response) {
         commit(Mutations.RESET_CART)
+        //---------------------
+        //---------------------
+        const userToken = JSON.parse(sessionStorage.getItem('user'))
+        const orders = await API.getOrders(userToken)
+        
+        if (orders) {
+          commit(Mutations.SET_ORDER_HISTORY, orders)
+        }
+        //---------------------
+        //---------------------
       }
     },
     async setSearchPhrase({ commit }, payload) {
@@ -161,7 +173,7 @@ export default {
   },
   getters: {
     getProducts(state) {
-      if (state.searchPhrase.length == 0) {
+      if (state.searchPhrase.length == 0 ) {
         return state.products
       } else {
         //--
