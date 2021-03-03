@@ -7,10 +7,21 @@
     </header>
     <main>
       <p>Results: {{fetchProducts.length}}</p>
+      <div class="filter-wrapper">
+        <label for="filters">Filter by:</label>
+
+        <select v-model="searchBy" id="filters">
+          <option value="wheels">wheels</option>
+          <option value="clothes">clothes</option>
+          <option value="board">board</option>
+        </select>
+
+        <button @click="clearFilters">Clear all filters!</button>
+      </div>
     <section class="products">
-      
       <ProductCard v-for="product in fetchProducts" :key="product._id" :prod="product" />
     </section>
+    <h3 v-if="!productsToShow">It seems that we could't find what you are looking for. Please try again!</h3>
     </main>
     <img @click="scrollUp" ref="topBtn" id="topBtn" src="@/assets/icons/arrow-up-white.svg" alt="">
   </section>
@@ -27,9 +38,25 @@ export default {
   components: {
    ProductCard
   },
+  data(){
+    return{
+      searchBy : null
+    }
+  },
   computed: {
     fetchProducts() {
-      return this.$store.getters.getProducts
+      if (!this.searchBy) {
+        return this.$store.getters.getProducts
+      }else{
+        return this.filterTheProduct(this.$store.getters.getProducts)
+      } 
+    },
+    productsToShow(){
+      if (this.fetchProducts.length == 0) {
+        return false
+      }else{
+        return true
+      }
     }
   },
     created(){
@@ -40,7 +67,6 @@ export default {
   },
   methods:{
      handleScroll(){
-      //  window.scrollTo({ top: 0, behavior: 'smooth' })
       if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
         this.$refs.topBtn.style.display = 'block';
       } else {
@@ -49,9 +75,21 @@ export default {
     },
     scrollUp(){
       window.scrollTo({ top: 0, behavior: 'smooth' })
-      // document.body.scrollTop = 0;
-      // document.documentElement.scrollTop = 0
     },
+    filterTheProduct(array){
+        let filteredProducts = []
+        array.map(prod => {
+          for (let key in prod) {
+            if ( prod[key] == this.searchBy) {
+              filteredProducts.push(prod)
+            }
+          }
+        })
+        return filteredProducts
+    },
+    clearFilters(){
+      this.searchBy = null
+    }
   }
 }
 </script>

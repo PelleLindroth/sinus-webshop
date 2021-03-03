@@ -9,7 +9,9 @@ export default {
     productsObject: {},
     products: [],
     searchPhrase: '',
-    productsLoading: true
+    productsLoading: true,
+    // filterIsActive : true,
+    // filterBy: 'clothes'
   },
   mutations: {
     [Mutations.SET_PRODUCTS](state, payload) {
@@ -154,13 +156,34 @@ export default {
   },
   getters: {
     getProducts(state) {
-      if (state.searchPhrase.length == 0) {
+      if (state.searchPhrase.length == 0 ) {
         return state.products
       } else {
         //--
         let filteredProducts = []
         state.products.map(prod => {
           for (let key in prod) {
+            // if ( prod[key] == state.filterBy) {
+
+            //   if (filteredProducts.length == 0) {
+            //     filteredProducts.push(prod)
+            //   }
+            //   let rep = true
+            //   filteredProducts.map(filProd => {
+            //     if (filProd._id != prod._id) {
+            //       rep = false
+            //     }
+            //     if (filProd._id == prod._id) {
+            //       rep = true
+            //     }
+            //   })
+            //   if (rep == false) {
+            //     filteredProducts.push(prod)
+            //   }
+
+            //   // alert('true!')
+            // }
+
             if (typeof prod[key] != 'number') {
               if (prod[key].toLowerCase().includes(state.searchPhrase)) { //hittar en match
                 if (filteredProducts.length == 0) {
