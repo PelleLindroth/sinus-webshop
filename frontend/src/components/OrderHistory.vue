@@ -85,11 +85,6 @@ export default {
       return null
     },
   },
-  data() {
-    return {
-      displayedOrder: null,
-    }
-  },
   props: {
     admin: Boolean,
   },
@@ -112,10 +107,10 @@ export default {
       this.$store.dispatch('updateOrderStatus', order)
     },
     showItems(order) {
-      if (this.displayedOrder) {
-        return this.displayedOrder._id == order._id
-      }
-      return false
+      return order.show
+    },
+    showOrder(order) {
+      order.show = !order.show
     },
     getImg(url) {
       return require(`@/assets/products/${url}`)
@@ -144,13 +139,6 @@ export default {
           return '#aa1212'
       }
     },
-    showOrder(order) {
-      if (this.displayedOrder) {
-        this.displayedOrder = null
-      } else {
-        this.displayedOrder = order
-      }
-    },
   },
 }
 </script>
@@ -172,7 +160,6 @@ section {
 
   .order-list {
     list-style: none;
-    // width: 100%;
     margin: 4rem auto 10rem;
 
     .order {
@@ -249,6 +236,7 @@ section {
       }
 
       .order-details {
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
         cursor: default;
         list-style: none;
         overflow: hidden;
