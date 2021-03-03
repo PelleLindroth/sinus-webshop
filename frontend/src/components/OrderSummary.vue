@@ -64,7 +64,6 @@ export default {
   },
   methods: {
     changePath() {
-      console.log(this.currentPath);
       if (this.currentPath == "/cart") {
         this.$router.push("/checkout")
       }

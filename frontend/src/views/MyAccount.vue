@@ -134,45 +134,18 @@
         </div>
       </div>
     </div>
-    <div class="order-history">
-      <h2>ORDER HISTORY</h2>
-      <div v-if="!orderHistory" class="no-orders"><p><em>No orders yet...</em></p></div>
-      <ul v-else class="order-list">
-        <li v-for="order in orderHistory" :key="order._id" class="order">
-          <div class="order-row" @click="showOrder(order)">
-              <div class="details-amount">
-              <div class="details">
-            <p>ORDER#: {{ order._id }}</p>
-            <p>DATE: {{ calculateDate(order.timeStamp) }}</p>
-          </div>
-          <div class="amount">
-            <p>TOTAL AMOUNT: {{ order.orderValue }} SEK</p>
-          </div>
-          </div>
-          <div class="status" :style="{backgroundColor: order.status == 'inProcess' ? '#3E8A9B' : '#aaa', color: '#fff'}">STATUS: {{ orderStatus(order.status) }}</div>
-          </div>
-          <transition name="items">
-          <ul v-if="showItems(order)" class="order-details">
-            <li v-for="(item, index) in order.items" :key="index" class="order-item">
-              <div class="img-container">
-                 <img :src="getImg(item.imgFile)" alt="">
-              </div>          
-              <h5>{{item.title}}</h5>
-              <p>Quantity: {{item.amount}}</p>
-              <p>Price: {{item.price}} SEK</p>
-              <p class="total">Subtotal: {{item.price * item.amount}} SEK</p>
-            </li>
-          </ul>
-          </transition>
-        </li>
-      </ul>
-    </div>
+    <OrderHistory v-if="user && user.role == 'customer'" />
   </section>
   </section>
 </template>
 
 <script>
+import OrderHistory from '../components/OrderHistory'
+
 export default {
+  components: {
+    OrderHistory,
+  },
   computed: {
     edit() {
       if (this.editName || this.editStreet || this.editZip || this.editCity) {
@@ -198,15 +171,15 @@ export default {
         return {}
       }
     },
-    orderHistory() {
-      if (this.user) {
-        if (this.$store.getters.getOrderHistory && this.$store.getters.getOrderHistory.length) {
-          return this.$store.getters.getOrderHistory
-        }
-      }
+    // orderHistory() {
+    //   if (this.user) {
+    //     if (this.$store.getters.getOrderHistory && this.$store.getters.getOrderHistory.length) {
+    //       return this.$store.getters.getOrderHistory
+    //     }
+    //   }
 
-      return null
-    },
+    //   return null
+    // },
   },
   data() {
     return {
@@ -220,13 +193,13 @@ export default {
         zip: false,
         city: false,
       },
-      displayedOrder: null
+      // displayedOrder: null
     }
   },
   methods: {
-    getImg(url) {
-      return require(`@/assets/products/${url}`)
-    },
+    // getImg(url) {
+    //   return require(`@/assets/products/${url}`)
+    // },
     updateUser() {
       this.editName = false
       this.editStreet = false
@@ -256,39 +229,39 @@ export default {
       }
       return true
     },
-     calculateDate(timeStamp) {
-      let year = new Date(timeStamp).getFullYear()
-      let month = new Date(timeStamp).getMonth() + 1
-      if (month < 10) {
-        month = '0' + month
-      }
-      let day = new Date(timeStamp).getDate()
-      if (day < 10) {
-        day = '0' + day
-      }
+    //  calculateDate(timeStamp) {
+    //   let year = new Date(timeStamp).getFullYear()
+    //   let month = new Date(timeStamp).getMonth() + 1
+    //   if (month < 10) {
+    //     month = '0' + month
+    //   }
+    //   let day = new Date(timeStamp).getDate()
+    //   if (day < 10) {
+    //     day = '0' + day
+    //   }
 
-      return `${year}/${month}/${day}`
-    },
-    orderStatus(status) {
-      if (status == 'inProcess') {
-        return 'In progress'
-      }
+    //   return `${year}/${month}/${day}`
+    // },
+    // orderStatus(status) {
+    //   if (status == 'inProcess') {
+    //     return 'In progress'
+    //   }
 
-      return status
-    },
-    showItems(order) {
-      if (this.displayedOrder) {
-         return this.displayedOrder._id == order._id
-      }
-    return false
-    },
-    showOrder(order) {
-      if (this.displayedOrder) {
-        this.displayedOrder = null
-      } else {
-         this.displayedOrder = order
-      }
-    },
+    //   return status
+    // },
+    // showItems(order) {
+    //   if (this.displayedOrder) {
+    //      return this.displayedOrder._id == order._id
+    //   }
+    // return false
+    // },
+    // showOrder(order) {
+    //   if (this.displayedOrder) {
+    //     this.displayedOrder = null
+    //   } else {
+    //      this.displayedOrder = order
+    //   }
+    // },
   },
 }
 </script>
@@ -372,117 +345,115 @@ export default {
     }
   }
 
-  .order-history {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    min-height: 20rem;
-    margin-bottom: 10rem;
+  // .order-history {
+  //   align-items: center;
+  //   display: flex;
+  //   flex-direction: column;
+  //   min-height: 20rem;
+  //   margin-bottom: 10rem;
 
-    .no-orders {
-      font-size: 1.4rem;
-      margin-top: 2rem;
-    }
+  //   .no-orders {
+  //     font-size: 1.4rem;
+  //     margin-top: 2rem;
+  //   }
 
-    .order-list {
-      list-style: none;
-      width: 100%;
-      margin: 4rem auto 10rem;
+  //   .order-list {
+  //     list-style: none;
+  //     width: 100%;
+  //     margin: 4rem auto 10rem;
 
-      .order {   
-        cursor: pointer;    
-        font-size: 1.2rem;
+  //     .order {
+  //       cursor: pointer;
+  //       font-size: 1.2rem;
 
-        &:nth-child(odd) {
-          background-color: #f1f1f1;
-        }
+  //       &:nth-child(odd) {
+  //         background-color: #f1f1f1;
+  //       }
 
-        &:hover {
-          opacity: 0.9;
-        }
+  //       &:hover {
+  //         opacity: 0.9;
+  //       }
 
-        .order-row {
-          box-shadow: 0 2px 4px rgba(0, 0, 0, .05);
-          display: flex;
+  //       .order-row {
+  //         box-shadow: 0 2px 4px rgba(0, 0, 0, .05);
+  //         display: flex;
 
-          .details-amount {
-            align-items: center;
-            display: flex;
-            padding: 1rem 2rem;
+  //         .details-amount {
+  //           align-items: center;
+  //           display: flex;
+  //           padding: 1rem 2rem;
 
-         
-            .details,
-            .amount {
-              width: 20rem;
-            }
+  //           .details,
+  //           .amount {
+  //             width: 20rem;
+  //           }
 
-            .details {
-              font-weight: 300;
-            }
+  //           .details {
+  //             font-weight: 300;
+  //           }
 
-            .amount {
-              font-weight: 700;
-            }
-         }
+  //           .amount {
+  //             font-weight: 700;
+  //           }
+  //        }
 
-          .status {
-            align-items: center;
-            display: flex;
-            font-weight: 700;
-            justify-content: center;
-            width: 15rem;
-          }
-        }
+  //         .status {
+  //           align-items: center;
+  //           display: flex;
+  //           font-weight: 700;
+  //           justify-content: center;
+  //           width: 15rem;
+  //         }
+  //       }
 
-        .items-enter,
-        .items-leave-to {
-          max-height: 0rem;
-        }
+  //       .items-enter,
+  //       .items-leave-to {
+  //         max-height: 0rem;
+  //       }
 
-        .items-enter-active, 
-        .items-leave-active {
-          transition: all 0.5s;
-        }
+  //       .items-enter-active,
+  //       .items-leave-active {
+  //         transition: all 0.5s;
+  //       }
 
-        .items-enter-to,
-        .items-leave {
-          max-height: 30rem;
-        }
+  //       .items-enter-to,
+  //       .items-leave {
+  //         max-height: 30rem;
+  //       }
 
-        .order-details {
-          cursor: default;
-          list-style: none;
-          overflow: hidden;
+  //       .order-details {
+  //         cursor: default;
+  //         list-style: none;
+  //         overflow: hidden;
 
-          .order-item {
-            align-items: center;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-            color: $secondary-clr-dk;
-            display: flex;
-            justify-content: space-between;
-            padding: 1rem 2rem;
-            .img-container {
-              display: flex;
-              justify-content: center;
-              min-width: 5rem;
-                 img {
-              height: 4rem;
-            }
-            }
-         
+  //         .order-item {
+  //           align-items: center;
+  //           box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  //           color: $secondary-clr-dk;
+  //           display: flex;
+  //           justify-content: space-between;
+  //           padding: 1rem 2rem;
+  //           .img-container {
+  //             display: flex;
+  //             justify-content: center;
+  //             min-width: 5rem;
+  //                img {
+  //             height: 4rem;
+  //           }
+  //           }
 
-            h5 {
-              color: #000;
-              min-width: 40%;
-            }
+  //           h5 {
+  //             color: #000;
+  //             min-width: 40%;
+  //           }
 
-            .total {
-              font-weight: 700;
-            }
-          }
-        }
-      }
-    }
-  }
+  //           .total {
+  //             font-weight: 700;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 }
 </style>

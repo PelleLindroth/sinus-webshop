@@ -9,7 +9,9 @@ export default {
     productsObject: {},
     products: [],
     searchPhrase: '',
-    productsLoading: true
+    productsLoading: true,
+    // filterIsActive : true,
+    // filterBy: 'clothes'
   },
   mutations: {
     [Mutations.SET_PRODUCTS](state, payload) {
@@ -97,12 +99,18 @@ export default {
     },
     async deleteProduct({ commit, getters }, id) {
       const response = await API.deleteProduct(id, getters.getUserToken)
-      console.log(response)
       if (response) {
         commit(Mutations.DELETE_PRODUCT, id)
         return true
       } else {
         return false
+      }
+    },
+    async updateOrderStatus({ commit, getters }, payload) {
+      const response = await API.updateOrderStatus(payload, getters.getUserToken)
+
+      if (response) {
+        commit(Mutations.UPDATE_ORDER, payload)
       }
     },
     async updateProduct({ commit, getters }, payload) {
@@ -129,20 +137,29 @@ export default {
     deleteFromCart({ commit }, id) {
       commit(Mutations.DELETE_FROM_CART, id)
     },
+
     async submitOrder({ commit, state, rootState }) {
       const cart = []
 
       state.cart.items.forEach(item => {
-        console.log(item)
         for (let i = 0; i < item.amount; i++) {
           cart.push(item._id)
         }
       })
-      console.log(cart)
       const response = await API.submitOrder({ items: cart }, rootState.userModule.userToken)
 
       if (response) {
         commit(Mutations.RESET_CART)
+        //---------------------
+        //---------------------
+        const userToken = JSON.parse(sessionStorage.getItem('user'))
+        const orders = await API.getOrders(userToken)
+        
+        if (orders) {
+          commit(Mutations.SET_ORDER_HISTORY, orders)
+        }
+        //---------------------
+        //---------------------
       }
     },
     async setSearchPhrase({ commit }, payload) {
@@ -154,7 +171,7 @@ export default {
   },
   getters: {
     getProducts(state) {
-      if (state.searchPhrase.length == 0) {
+      if (state.searchPhrase.length == 0 ) {
         return state.products
       } else {
         //--
