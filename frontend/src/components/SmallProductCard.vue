@@ -161,9 +161,11 @@ article {
     width: 10rem;
     background: linear-gradient(#fff, $off-white);
     margin-right: 1rem;
+    text-align: center;
 
     img {
-      width: 100%;
+      height: 10rem;
+      
     }
   }
 
