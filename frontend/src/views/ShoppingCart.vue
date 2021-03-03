@@ -16,7 +16,11 @@
     <OrderSummary class="cart-summary" />
   
   </section>
-  <section v-if="cartList.length === 0"><p class="large">You currently have no items in your cart.</p></section>
+  <section class="empty-cart" v-if="cartList.length === 0">
+    <p class="large">You currently have no items in your cart.</p>
+    <img src="@/assets/icons/empty-basket.png" alt="empty shopping basket">
+    </section>
+
 </section>
 </template>
 
@@ -76,6 +80,14 @@ computed: {
   }
 
   
+}
+
+.empty-cart {
+  text-align: center;
+  img {
+    width: 30%;
+    margin: 5rem;
+  }
 }
 
 </style>

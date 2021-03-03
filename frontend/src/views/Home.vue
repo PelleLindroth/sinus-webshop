@@ -2,7 +2,7 @@
   <section>
     <header>
       
-        <img src="@/assets/products/skate-hero-1.jpg" alt="Purple hoodie with sinus logo">
+        <img src="@/assets/products/skate-hero-1.jpg" alt="Man performing skate jump at sunset">
       
     </header>
     <main>

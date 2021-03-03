@@ -26,7 +26,7 @@
             <br>
             <p>Address: 12 Madeup Street <br>London <br>WE12 4CD</p>
             <br>
-            <a class="underline" href="">Fins us on google maps ></a>
+            <a class="underline" href="">Find us on google maps ></a>
         </div>
         <div class="payment">
             <h4>Payment</h4>

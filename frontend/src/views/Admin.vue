@@ -14,50 +14,89 @@
 
         <div class="view-row">
           <label>Title</label>
-          <input type="text" v-model="product.title" />
+          <input type="text" v-model="product.title" required />
         </div>
 
         <div class="view-row">
           <label>Price:</label>
-          <input type="text" v-model="product.price" />
+          <input type="text" v-model="product.price" required />
         </div>
 
         <div class="view-row">
           <label>Short Desc:</label>
-          <input type="text" v-model="product.shortDesc" />
+          <input type="text" v-model="product.shortDesc" required />
         </div>
 
         <div class="view-row">
           <label>Long desc:</label>
-          <input type="text" v-model="product.longDesc" />
+          <input type="text" v-model="product.longDesc" required />
         </div>
 
         <div class="view-row">
-          <label>Image file:</label>
-          <input type="text" v-model="product.imgFile" />
+          <label for="imageFile">Image file:</label>
+          <select
+            name="imageFile"
+            id="imageFile"
+            v-model="product.imgFile"
+            required
+          >
+            <option value="skateboard-aurora.png">skateboard-aurora.png</option>
+            <option value="skateboard-cartoon.png"
+              >skateboard-cartoon.png</option
+            >
+            <option value="skateboard-cat.png">skateboard-cat.png</option>
+            <option value="skateboard-dog.png">skateboard-dog.png</option>
+            <option value="skateboard-eagle.png">skateboard-eagle.png</option>
+            <option value="skateboard-fire.png">skateboard-fire.png</option>
+            <option value="skateboard-fireworks.png"
+              >skateboard-fireworks.png</option
+            >
+            <option value="skateboard-flower.png">skateboard-flower.png</option>
+            <option value="skateboard-generic.png"
+              >skateboard-generic.png</option
+            >
+            <option value="skateboard-girl.png">skateboard-girl.png</option>
+            <option value="skateboard-greta.png">skateboard-greta.png</option>
+            <option value="skateboard-ink.png">skateboard-ink.png</option>
+            <option value="skateboard-newyork.png"
+              >skateboard-newyork.png</option
+            >
+            <option value="skateboard-polarbear.png"
+              >skateboard-polarbear.png</option
+            >
+            <option value="skateboard-purple.png">skateboard-purple.png</option>
+            <option value="skateboard-smoke.png">skateboard-smoke.png</option>
+          </select>
         </div>
 
         <BaseButton color="teal" class="btn">Add Product</BaseButton>
+
+        <transition name="fade">
+          <p class="message" v-if="showMessage">
+            Success! Your product was added to the store.
+          </p>
+          <p class="error message" v-if="showError">
+            Oops! Something went wrong, please try again.
+          </p>
+        </transition>
       </form>
-
-      <section class="products">
-        <h2>ALL PRODUCTS</h2>
-        <SmallProductCard
-          v-for="product in products"
-          :key="product._id"
-          :prod="product"
-          class="card"
-        />
-      </section>
     </div>
-
+    <section class="products">
+      <h2>ALL PRODUCTS</h2>
+      <SmallProductCard
+        v-for="product in products"
+        :key="product._id"
+        :prod="product"
+        class="card"
+      />
+    </section>
     <OrderHistory admin />
   </section>
 </template>
 
 <script>
 import SmallProductCard from '@/components/SmallProductCard.vue'
-import OrderHistory from '../components/OrderHistory'
+import OrderHistory from '../components/OrderHistory.vue'
 export default {
   components: {
     SmallProductCard,
@@ -72,6 +111,8 @@ export default {
         longDesc: '',
         imgFile: '',
       },
+      showMessage: false,
+      showError: false,
     }
   },
   computed: {
@@ -85,6 +126,7 @@ export default {
   methods: {
     async addNewProduct() {
       const success = await this.$store.dispatch('createProduct', this.product)
+      console.log(success)
       if (success) {
         this.product = {
           title: '',
@@ -93,6 +135,15 @@ export default {
           longDesc: '',
           imgFile: '',
         }
+        this.showMessage = true
+        setTimeout(() => {
+          this.showMessage = false
+        }, 2000)
+      } else {
+        this.showError = true
+        setTimeout(() => {
+          this.showError = false
+        }, 2000)
       }
     },
   },
@@ -142,6 +193,30 @@ export default {
       margin: 3rem 0 3rem auto;
     }
 
+    .message {
+      align-self: flex-end;
+      font-size: 1.4rem;
+    }
+
+    .error {
+      color: red;
+    }
+
+    .fade-enter,
+    .fade-leave-to {
+      opacity: 0;
+    }
+
+    .fade-enter-to,
+    .fade-leave {
+      opacity: 1;
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: all 0.3s ease;
+    }
+
     .view-row {
       align-items: center;
       display: flex;
@@ -155,7 +230,8 @@ export default {
       }
 
       .info,
-      input {
+      input,
+      select {
         background-color: $off-white;
         border: 1px solid $secondary-clr-dk;
         font-family: inherit;
