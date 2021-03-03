@@ -49,6 +49,7 @@ export default {
         commit(Mutations.SET_LOGGED_IN, true)
 
         const orders = await API.getOrders(payload)
+        console.log(orders)
         if (orders) {
           commit(Mutations.SET_ORDER_HISTORY, orders)
         }

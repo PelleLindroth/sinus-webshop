@@ -131,6 +131,7 @@ export default {
     deleteFromCart({ commit }, id) {
       commit(Mutations.DELETE_FROM_CART, id)
     },
+
     async submitOrder({ commit, state, rootState }) {
       const cart = []
 
@@ -140,11 +141,20 @@ export default {
           cart.push(item._id)
         }
       })
-      console.log(cart)
+      // console.log(cart)
       const response = await API.submitOrder({ items: cart }, rootState.userModule.userToken)
 
       if (response) {
         commit(Mutations.RESET_CART)
+        //---------------------
+        //---------------------
+        const userToken = JSON.parse(sessionStorage.getItem('user'))
+        const orders = await API.getOrders(userToken)
+        if (orders) {
+          commit(Mutations.SET_ORDER_HISTORY, orders)
+        }
+        //---------------------
+        //---------------------
       }
     },
     async setSearchPhrase({ commit }, payload) {
@@ -163,27 +173,6 @@ export default {
         let filteredProducts = []
         state.products.map(prod => {
           for (let key in prod) {
-            // if ( prod[key] == state.filterBy) {
-
-            //   if (filteredProducts.length == 0) {
-            //     filteredProducts.push(prod)
-            //   }
-            //   let rep = true
-            //   filteredProducts.map(filProd => {
-            //     if (filProd._id != prod._id) {
-            //       rep = false
-            //     }
-            //     if (filProd._id == prod._id) {
-            //       rep = true
-            //     }
-            //   })
-            //   if (rep == false) {
-            //     filteredProducts.push(prod)
-            //   }
-
-            //   // alert('true!')
-            // }
-
             if (typeof prod[key] != 'number') {
               if (prod[key].toLowerCase().includes(state.searchPhrase)) { //hittar en match
                 if (filteredProducts.length == 0) {
