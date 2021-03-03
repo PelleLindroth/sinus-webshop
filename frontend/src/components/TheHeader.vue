@@ -20,7 +20,8 @@
             <div v-else @click="toggleModal" class="initials">{{userInitials}}</div>
         </div>
     </div>
-
+        
+        <transition name="fade">
         <div v-if="loginModalActive" class="signInBox">
             <div v-if="!isLoggedIn" class="sign-in-form">
                 <h2>SIGN IN</h2>
@@ -59,6 +60,7 @@
             </div>
 
         </div>
+        </transition>
 
 
   </header>
@@ -126,6 +128,7 @@ methods:{
 
     header{
         background-color: black;
+        position: relative;
         padding: 3rem 4rem;
         display: flex;
         justify-content: space-between;
@@ -154,6 +157,7 @@ methods:{
                 .profile{
                     height: 5rem;
                     margin-left: 3rem;
+                    
                 }
                 .initials {
                     align-items: center;
@@ -169,6 +173,7 @@ methods:{
                     padding: 1rem;
                     border-radius: 50%;
                     background-color: $tertiary-clr;
+                    
                 }
                 .cart-img{
                     position: relative;
@@ -202,6 +207,21 @@ methods:{
         flex-direction: column;
         align-content: center;
         box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.596);
+
+        @media (min-width: 1440px) {
+            
+        }
+
+        .already-logged-in {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .base-button {
+                width: 30rem;
+                margin-bottom: 2rem;
+            }
+        }
         a{
             text-decoration: none;
             color: black;
@@ -244,4 +264,19 @@ methods:{
         }  
     }
 }
+
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+
+  }
+
+  .fade-enter-to, .fade-leave {
+    opacity: 1;
+    
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: all 0.3s ease-out;
+    
+  }
 </style>
