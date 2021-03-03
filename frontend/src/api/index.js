@@ -114,6 +114,20 @@ export async function createProduct(payload, adminToken) {
   }
 }
 
+export async function updateOrderStatus(payload, adminToken) {
+  try {
+    const response = await API.patch(`/orders/${payload._id}`, payload, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`
+      }
+    })
+
+    return response
+  } catch (error) {
+    return false
+  }
+}
+
 export async function deleteProduct(id, adminToken) {
   try {
     const response = await API.delete(`/products/${id}`, {

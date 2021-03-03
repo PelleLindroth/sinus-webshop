@@ -105,6 +105,13 @@ export default {
         return false
       }
     },
+    async updateOrderStatus({ commit, getters }, payload) {
+      const response = await API.updateOrderStatus(payload, getters.getUserToken)
+
+      if (response) {
+        commit(Mutations.UPDATE_ORDER, payload)
+      }
+    },
     async updateProduct({ commit, getters }, payload) {
       const response = await API.updateProduct(payload, getters.getUserToken)
 
@@ -138,7 +145,7 @@ export default {
           cart.push(item._id)
         }
       })
-      console.log(cart)
+
       const response = await API.submitOrder({ items: cart }, rootState.userModule.userToken)
 
       if (response) {
