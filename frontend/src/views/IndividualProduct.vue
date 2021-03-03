@@ -89,9 +89,10 @@ methods: {
   .prod-image {
     background: linear-gradient(#fff, $off-white);
     width: 48%;
+    text-align: center;
     
     img {
-      width: 100%;
+      height: 40rem;
     }
   }
 
