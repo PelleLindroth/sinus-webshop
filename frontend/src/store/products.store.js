@@ -48,12 +48,9 @@ export default {
     },
     [Mutations.UPDATE_PRODUCT](state, payload) {
       const updatedObject = state.productsObject[payload._id]
-      updatedObject.title = payload.title
-      updatedObject.imgFile = payload.imgFile
-      updatedObject.longDesc = payload.longDesc
-      updatedObject.price = payload.price
-      updatedObject._id = payload._id
-      updatedObject.shortDesc = payload.shortDesc
+      Object.keys(updatedObject).forEach(key => {
+        updatedObject[key] = payload[key]
+      })
     },
     [Mutations.REMOVE_FROM_CART](state, id) {
       state.cart.items.forEach(item => {
