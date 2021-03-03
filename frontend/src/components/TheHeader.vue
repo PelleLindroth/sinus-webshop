@@ -110,10 +110,13 @@ methods:{
     toggleModal(){
         this.modalActive = !this.modalActive
     },
-    signIn(){
-        this.$store.dispatch('logIn', this.user)
+    async signIn(){
+        await this.$store.dispatch('logIn', this.user)
         this.user = {email: '', password: ''}
-        this.toggleModal()
+        if (this.isLoggedIn) {
+            this.toggleModal()
+            }
+            
     },
     signOut(){
         this.$store.dispatch('logOut')
