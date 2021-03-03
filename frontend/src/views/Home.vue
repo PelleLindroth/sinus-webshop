@@ -6,22 +6,26 @@
       
     </header>
     <main>
-      <p>Results: {{fetchProducts.length}}</p>
-      <div class="filter-wrapper">
-        <label for="filters">Filter by:</label>
+      <section class="filterbar">
+        <p>Results: {{fetchProducts.length}}</p>
 
-        <select v-model="searchBy" id="filters">
-          <option value="wheels">wheels</option>
-          <option value="clothes">clothes</option>
-          <option value="board">board</option>
-        </select>
+        <div class="filter-wrapper">
+          <label for="filters">Filter by:</label>
+          <select v-model="searchBy" id="filters">
+            <option value="wheels">wheels</option>
+            <option value="clothes">clothes</option>
+            <option value="board">board</option>
+          </select>
 
-        <button @click="clearFilters">Clear all filters!</button>
-      </div>
+          <Base-button @click.native="clearFilters" color="offwhite">Clear filters</Base-button>
+        </div>
+      </section>
+
+
     <section class="products">
       <ProductCard v-for="product in fetchProducts" :key="product._id" :prod="product" />
     </section>
-    <h3 v-if="!productsToShow">It seems that we could't find what you are looking for. Please try again!</h3>
+    <h3 class="no-products-msg" v-if="!productsToShow">It seems that we could't find what you are looking for. Please try again!</h3>
     </main>
     <img @click="scrollUp" ref="topBtn" id="topBtn" src="@/assets/icons/arrow-up-white.svg" alt="">
   </section>
@@ -119,8 +123,12 @@ p {
   flex-wrap: wrap;
   justify-content: center;
   
-  
 }
+  .no-products-msg{
+    height: 50rem;
+    margin-top: 5rem;
+    padding: 1rem;
+  }
 #topBtn {
   height: 5rem;
   width: 5rem;
@@ -134,5 +142,27 @@ p {
   padding: 1rem;
   border-radius: 50%;
 }
-
+.filterbar{
+  max-width: 100rem;
+  padding: 0 1rem;
+  display:flex;
+  justify-content: space-between;
+  .filter-wrapper{
+    label{
+      font-size: 1.4rem;
+    }
+    select{
+        width: 14rem;
+        margin-bottom: 1.4rem;
+        background-color: $off-white;
+        border: 1px solid $secondary-clr-dk;
+        font-family: inherit;
+        font-size: 1.4rem;
+        height: 3.622rem;
+        outline: none;
+        padding: 0.5rem;
+        margin: 0 1rem;
+    }
+  }
+}
 </style>

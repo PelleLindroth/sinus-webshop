@@ -99,7 +99,6 @@ export default {
     },
     async deleteProduct({ commit, getters }, id) {
       const response = await API.deleteProduct(id, getters.getUserToken)
-      console.log(response)
       if (response) {
         commit(Mutations.DELETE_PRODUCT, id)
         return true
@@ -143,7 +142,6 @@ export default {
       const cart = []
 
       state.cart.items.forEach(item => {
-        console.log(item)
         for (let i = 0; i < item.amount; i++) {
           cart.push(item._id)
         }

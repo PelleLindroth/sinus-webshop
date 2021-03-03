@@ -126,7 +126,6 @@ export default {
   methods: {
     async addNewProduct() {
       const success = await this.$store.dispatch('createProduct', this.product)
-      console.log(success)
       if (success) {
         this.product = {
           title: '',

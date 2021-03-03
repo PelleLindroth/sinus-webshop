@@ -235,12 +235,20 @@ methods:{
         }
         label{
         display: inline-block;
-        width: 100px;
+        width: 10rem;
+        font-size: 1.4rem;
         }
         input{
-        height: 2.4rem;
-        width: 250px;
+        width: 25rem;
         margin-bottom: 1.4rem;
+        background-color: $off-white;
+        border: 1px solid $secondary-clr-dk;
+        font-family: inherit;
+        font-size: 1.4rem;
+        height: 3rem;
+        outline: none;
+        padding: 0.5rem;
+
         }
         .email{
         width: fit-content;
@@ -259,6 +267,9 @@ methods:{
             .register-link{
                 text-decoration: underline;
                 font-weight: bold;
+            }
+            .register-text{
+                margin-top: 0.5rem;
             }
         }
         .error-message{
