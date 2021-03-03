@@ -1,7 +1,8 @@
 <template>
 <section class="outer-wrapper">
-<section>
   <Breadcrumbs path1="register"  />
+<section class="register-wrapper">
+  
   <h2>REGISTER ACCOUNT</h2>
   <form ref="regForm" @submit.prevent="registerUser" action="" class="register-form">
     <p class="bold">Delivery Address</p>
@@ -46,6 +47,7 @@
   
     <BaseButton class="centered" color="teal">Sign me up!</BaseButton>
   </form>
+</section>
 </section>
 </template>
 
@@ -115,7 +117,12 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/styles/_variables.scss";
-section {
+
+.outer-wrapper {
+  max-width: 100rem;
+  margin: 0 auto;
+}
+.register-wrapper {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -124,7 +131,7 @@ section {
   .register-form {
     display: flex;
     flex-direction: column;
-    width: 35%;
+    width: 50%;
     margin: 4rem auto 10rem;
 
   .bold {

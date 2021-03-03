@@ -1,6 +1,7 @@
 <template>
 <section class="breadcrumbs-wrapper">
-<router-link to="/">Home /</router-link>
+<router-link to="/">Home</router-link>
+<p> / </p>
 <router-link v-if="path2" :to="path1"> {{path1}} </router-link>
 
 <p v-else> {{path1}}</p>

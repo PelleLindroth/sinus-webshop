@@ -1,5 +1,7 @@
 <template>
 <section class="cart-wrapper">
+<Breadcrumbs path1="cart" />
+
   <h2>SHOPPING CART</h2>
   <section class="flex-container" v-if="cartList.length > 0">
 
@@ -28,10 +30,12 @@
 import SmallProductCard from "@/components/SmallProductCard.vue"
 import OrderSummary from "@/components/OrderSummary.vue"
 
+
 export default {
 components: {
   SmallProductCard,
   OrderSummary
+
 },
 computed: {
   cartList() {
