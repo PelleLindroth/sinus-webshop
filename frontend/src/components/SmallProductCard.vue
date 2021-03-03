@@ -22,14 +22,20 @@
     @click="deleteItemFromCart(prod._id)">
     <p class="large">{{prod.price}} kr</p>
   </div>
+  <transition name="fade">
   <BaseModal v-if="toggleModal" >
+  
   <section class="modal-inner">
+    
       <section class="delete-info" v-if="deleteOrEdit === 'delete'">
         <p class="bold">Are you sure you want to delete item from the store?</p>
         <p>This action <strong>cannot</strong> be undone</p>
         <BaseButton color="pink" class="btn" @click.native="deleteProduct" >CONFIRM</BaseButton>
         <BaseButton color="offwhite" class="btn" @click.native="closeModal">CANCEL</BaseButton>
       </section>
+    
+      
+      
       <section class="edit-info" v-if="deleteOrEdit === 'edit'">
         <form @submit.prevent="updateProduct" class="information-wrapper">
       <p class="bold">Edit item</p>
@@ -64,8 +70,11 @@
     </div>
   </form>
       </section>
+      
   </section>
+  
   </BaseModal>
+  </transition>
 
   
 </article>
@@ -161,9 +170,11 @@ article {
     width: 10rem;
     background: linear-gradient(#fff, $off-white);
     margin-right: 1rem;
+    text-align: center;
 
     img {
-      width: 100%;
+      height: 10rem;
+      
     }
   }
 
@@ -216,6 +227,8 @@ article {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
+  
 
   .bold {
     font-size: 1.5rem;
@@ -279,5 +292,20 @@ article {
   }
 
 }
+
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+
+  }
+
+  .fade-enter-to, .fade-leave {
+    opacity: 1;
+    
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: all 0.5s ease-out;
+    
+  }
 
 </style>
