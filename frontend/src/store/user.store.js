@@ -17,6 +17,12 @@ export default {
     [Mutations.SET_ORDER_HISTORY](state, payload) {
       state.orderHistory = payload
     },
+    [Mutations.UPDATE_ORDER](state, payload) {
+      const updatedOrder = state.orderHistory.find(order => order._id == payload._id)
+      Object.keys(updatedOrder).forEach(key => {
+        updatedOrder[key] = payload[key]
+      })
+    },
     [Mutations.SET_LOGGED_IN](state, payload) {
       state.isLoggedIn = payload
     },

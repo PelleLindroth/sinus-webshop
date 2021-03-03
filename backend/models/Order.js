@@ -51,7 +51,8 @@ module.exports = {
         if (!VALID_STATUS.includes(status)) {
             return { error: true, message: `Invalid status, valid status include: ${VALID_STATUS.join(', ')}` }
         }
-        let numUpdated = await orders.update({ _id: id }, { status })
+        // let numUpdated = await orders.update({ _id: id }, { status })
+        let numUpdated = await orders.update({ _id: id }, { $set: { status } })
 
         if (numUpdated) {
             return { error: false }
