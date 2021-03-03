@@ -1,5 +1,6 @@
 <template>
 <section>
+  <Breadcrumbs path1="cart" path2="checkout" />
   <h2>CHECKOUT</h2>
   <div class="flex-wrapper">
   <form class="information-wrapper">
