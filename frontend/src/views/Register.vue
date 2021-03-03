@@ -1,5 +1,6 @@
 <template>
 <section>
+  <Breadcrumbs path1="register"  />
   <h2>REGISTER ACCOUNT</h2>
   <form ref="regForm" @submit.prevent="registerUser" action="" class="register-form">
     <p class="bold">Delivery Address</p>

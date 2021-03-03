@@ -9,6 +9,7 @@ class="no-access"
 </section>
 
 <section v-else class="admin-wrapper">
+  <Breadcrumbs path1="admin" />
   <h2>ADMIN</h2>
   
   <div class="flex-wrapper">
