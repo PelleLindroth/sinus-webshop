@@ -15,7 +15,9 @@ export default {
       state.currentUser = payload
     },
     [Mutations.SET_ORDER_HISTORY](state, payload) {
-      state.orderHistory = payload.map(order => ({ ...order, show: false }))
+      if (payload) {
+        state.orderHistory = payload.map(order => ({ ...order, show: false }))
+      }
     },
     [Mutations.UPDATE_ORDER](state, payload) {
       const updatedOrder = state.orderHistory.find(order => order._id == payload._id)
