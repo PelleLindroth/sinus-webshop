@@ -1,4 +1,5 @@
 <template>
+<section class="outer-wrapper">
 <section>
   <Breadcrumbs path1="register"  />
   <h2>REGISTER ACCOUNT</h2>
